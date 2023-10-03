@@ -7,7 +7,7 @@ function ChatFrame_OnEvent(event)
 		if HCFSpam == arg1 then
 			return false
 		end
-		local output = "|cffe6cd80[Hardcore] \|124cfff00000\124Hplayer:"..arg2.."\124h["..arg2.."]:\124h\124r|cffe6cd80 "..arg1
+		local output = "|cffe6cd80[Hardcore] |cffe6cd80\124Hplayer:"..arg2.."\124h["..arg2.."]\124h\124r|cffe6cd80 "..arg1
 		if HCFFrame == 1 then
 			ChatFrame1:AddMessage(output)
 		elseif HCFFrame == 2 then
