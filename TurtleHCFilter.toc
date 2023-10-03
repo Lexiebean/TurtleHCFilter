@@ -1,0 +1,6 @@
+## Interface: 11200
+## Title: Turtle HC Filter
+## Author: |cffbe5effLexie|r
+## Version: 1.0.0
+## SavedVariables: HCFFrame
+TurtleHCFilter.lua
