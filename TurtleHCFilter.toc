@@ -2,5 +2,5 @@
 ## Title: Turtle HC Filter
 ## Author: |cffbe5effLexie|r
 ## Version: 1.0.0
-## SavedVariables: HCFFrame
+## SavedVariables: HCFFrame HCFPrefix
 TurtleHCFilter.lua
