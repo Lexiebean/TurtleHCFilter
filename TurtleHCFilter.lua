@@ -1,5 +1,6 @@
 if HCFFrame == nil then HCFFrame = 1 end
-if HCFPrefix == nil then HCFPrefix = "H" end
+if HCFPrefix == nil then HCFPrefix = "HC" end
+if HCFColour == nil then HCFColour = "e6cd80" end
 
 TurtleHCFilter_ChatFrame_OnEvent = ChatFrame_OnEvent
 HCFSpam = ''
@@ -15,7 +16,7 @@ function ChatFrame_OnEvent(event)
 		else
 			prefix = "["..HCFPrefix.."] "
 		end
-		local output = "|cffe6cd80"..prefix.."|cffe6cd80\124Hplayer:"..arg2.."\124h["..arg2.."]\124h\124r|cffe6cd80 "..arg1
+		local output = "|cff"..HCFColour..prefix.."|cff"..HCFColour.."\124Hplayer:"..arg2.."\124h["..arg2.."]\124h\124r|cff"..HCFColour.." "..arg1
 		if HCFFrame == 1 then
 			ChatFrame1:AddMessage(output)
 		elseif HCFFrame == 2 then
@@ -85,6 +86,14 @@ SlashCmdList["TurtleHCFilter"] = function(message)
 				Message("Channel prefix set to nothing")
 			else
 				Message("Channel prefix set to: "..HCFPrefix)
+			end
+		elseif commandlist[1] == "colour" or commandlist[1] == "color" then
+			if commandlist[2] == nil then
+				Message("Channel prefix set to the default: |cffe6cd80e6cd80")
+				HCFColour = "e6cd80"
+			else
+				HCFColour = commandlist[2]
+				Message("Channel prefix set to: "..HCFColour)
 			end
 		else
 			Error("Invalid command: "..message)

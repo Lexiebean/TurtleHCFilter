@@ -26,3 +26,14 @@ Set Hardcore chat prefix back to Hardcore
 ```
 /hcf prefix Hardcore
 ```
+
+Set Hardcore chat colour
+**Must be a hex code**
+```
+/hcf colour e6cd80
+```
+
+Set Hardcore chat colour back to default
+```
+/hcf colour
+```
