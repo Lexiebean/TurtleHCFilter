@@ -16,7 +16,8 @@ function ChatFrame_OnEvent(event)
 		else
 			prefix = "["..HCFPrefix.."] "
 		end
-		local output = "|cff"..HCFColour..prefix.."|cff"..HCFColour.."\124Hplayer:"..arg2.."\124h["..arg2.."]\124h\124r|cff"..HCFColour.." "..arg1
+		local msg = string.gsub(arg1, "|r", "|r|cff"..HCFColour)
+		local output = "|cff"..HCFColour..prefix.."|cff"..HCFColour.."\124Hplayer:"..arg2.."\124h["..arg2.."]\124h\124r|cff"..HCFColour.." "..msg
 		if HCFFrame == 1 then
 			ChatFrame1:AddMessage(output)
 		elseif HCFFrame == 2 then
