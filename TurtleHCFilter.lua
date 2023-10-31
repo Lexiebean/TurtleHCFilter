@@ -22,14 +22,30 @@ end
 
 function FilterOut(chat)
 	if HCFLevelFilter then
-		local marker = FindAny(string.lower(arg1), "wts", "wtb", "wtt", "lf%d*m", "lfg")
+		local marker = FindAny(string.lower(arg1), "wts", "wtb", "wtt", "lf%d*m", "lfg", "^lf +", " +lf +")
 		if marker ~= nil then
+			local bottomRangeLevel, topRangeLevel
+			-- Check for ##+
 			local levelStart, levelEnd = string.find(arg1, "%d+ *+")
 			if levelStart ~= nil then
 				local plusLevel = tonumber(string.sub(arg1, levelStart, levelEnd-1))
+				bottomRangeLevel = plusLevel - HC_LEVEL_RANGE
+				topRangeLevel = plusLevel + HC_LEVEL_RANGE
+			else
+				-- Check for ##-## range
+				local levelRangeStart, levelRangeEnd = string.find(arg1, "%d+ *- *%d+")
+				if levelRangeStart ~= nil then
+					local rangeString = string.sub(arg1, levelRangeStart, levelRangeEnd)
+					local dashIdx, _ = string.find(rangeString, "-")
+					bottomRangeLevel = tonumber(string.sub(rangeString, 0, dashIdx-1))
+					topRangeLevel = tonumber(string.sub(rangeString, dashIdx+1, levelRangeEnd))
+				end
+			end
+			-- Check player level and compare to the HC trading range
+			if not (bottomRangeLevel == nil or topRangeLevel == nil) then
 				local myLevel = UnitLevel("player")
-				if plusLevel < myLevel - HC_LEVEL_RANGE or plusLevel > myLevel + HC_LEVEL_RANGE then
-					Debug("- " .. arg1)
+				if myLevel < bottomRangeLevel or myLevel > topRangeLevel then
+					Debug("[" .. bottomRangeLevel .. "-" .. topRangeLevel .."] - " .. arg1)
 					HCFSpam = arg1
 					return true
 				end
