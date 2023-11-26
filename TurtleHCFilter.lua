@@ -117,6 +117,17 @@ function SetFrame(frameString)
 	end
 end
 
+function ShowHelp()
+	Message("/hcf # or /hcf frame #\t- Modify the chat frame for HC Chat")
+	Message("/hcf [PREFIX]\t\t- Set the channel prefix to PREFIX (default: HC)")
+	Message("/hcf colour [HEX ##]\t- Set the colour of text (default: e6cd80)")
+	Message("/hcf levelfilter\t\t- Turn the level filter on or off (default: on)")
+	Message("/hcf info\t\t- Show the current settings of HCF")
+	Message("/hcf debug\t\t- Turn debug mode on or off (default: off)")
+	Message("/hcf help\t\t- Show this message!")
+	Message("https://github.com/trumpetx/TurtleHCFilter for bugs and suggestions")
+end
+
 SLASH_TurtleHCFilter1, SLASH_TurtleHCFilter2 = "/HCF", "/HCFilter"
 SlashCmdList["TurtleHCFilter"] = function(message)
 	local frame = tonumber(message)
@@ -127,7 +138,7 @@ SlashCmdList["TurtleHCFilter"] = function(message)
 			table.insert(commandlist, command)
 		end
 		if commandlist[1] == nil then 
-			Error("No command provided: "..message)
+			ShowHelp()
 			return
 		end
 		if commandlist[1] == "frame" then
@@ -136,6 +147,9 @@ SlashCmdList["TurtleHCFilter"] = function(message)
 				return
 			end
 			SetFrame(commandlist[2])
+		elseif commandlist[1] == "help" then
+			ShowHelp()
+			return
 		elseif commandlist[1] == "prefix" then
 			HCFPrefix = commandlist[2]
 			if commandlist[2] == nil then
