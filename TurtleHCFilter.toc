@@ -1,6 +1,7 @@
 ## Interface: 11200
 ## Title: Turtle HC Filter
-## Author: |cffbe5effLexie|r and |c013220ffTrumpetX|
+## Author: |cffbe5effLexie|r and |c013220ffTrumpetX|r
 ## Version: 2.0.0
-## SavedVariables: HCFFrame HCFPrefix HCFColour HCFLevelFilter HCFDebug
+## Notes: https://github.com/trumpetx/TurtleHCFilter
+## SavedVariables: HCFFrame HCFPrefix HCFColour HCFLevelFilter HCFDebug HCFTrace
 TurtleHCFilter.lua

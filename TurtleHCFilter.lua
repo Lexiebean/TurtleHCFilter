@@ -3,12 +3,17 @@ if HCFPrefix == nil then HCFPrefix = "HC" end
 if HCFColour == nil then HCFColour = "e6cd80" end
 if HCFLevelFilter == nil then HCFLevelFilter = true end
 if HCFDebug == nil then HCFDebug = false end
+if HCFTrace == nil then HCFTrace = false end
 
 local gfind = string.gmatch or string.gfind
 local HC_LEVEL_RANGE = 5
 
 TurtleHCFilter_ChatFrame_OnEvent = ChatFrame_OnEvent
 HCFSpam = ''
+local addonNotes = GetAddOnMetadata("TurtleHCFilter", "Notes")
+local addonVersion = GetAddOnMetadata("TurtleHCFilter", "Version")
+local addonAuthor = GetAddOnMetadata("TurtleHCFilter", "Author")
+local me = UnitName("player")
 
 function FindAny(str, ...)
 	for _,v in ipairs(arg) do
@@ -107,6 +112,12 @@ function Debug(message)
 	end
 end
 
+function Trace(message)
+	if HCFTrace then
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5effHCF|cffffff00 "..message)
+	end
+end
+
 function SetFrame(frameString)
 	local frame = tonumber(frameString)
 	if frame == nil then
@@ -118,14 +129,15 @@ function SetFrame(frameString)
 end
 
 function ShowHelp()
-	Message("/hcf # or /hcf frame #\t- Modify the chat frame for HC Chat")
-	Message("/hcf [PREFIX]\t\t- Set the channel prefix to PREFIX (default: HC)")
-	Message("/hcf colour [HEX ##]\t- Set the colour of text (default: e6cd80)")
-	Message("/hcf levelfilter\t\t- Turn the level filter on or off (default: on)")
-	Message("/hcf info\t\t- Show the current settings of HCF")
-	Message("/hcf debug\t\t- Turn debug mode on or off (default: off)")
-	Message("/hcf help\t\t- Show this message!")
-	Message("https://github.com/trumpetx/TurtleHCFilter for bugs and suggestions")
+	Message("/hcf # or /hcf frame # - Modify the chat frame for HC Chat")
+	Message("/hcf [PREFIX] - Set the channel prefix to PREFIX (default: HC)")
+	Message("/hcf colour [HEX ##] - Set the colour of text (default: e6cd80)")
+	Message("/hcf levelfilter - Turn the level filter on or off (default: on)")
+	Message("/hcf info - Show the current settings of HCF")
+	Message("/hcf debug - Turn debug mode on or off (default: off)")
+	Message("/hcf help - Show this message!")
+	Message(addonNotes .. " for bugs and suggestions")
+	Message("Written by " .. addonAuthor)
 end
 
 SLASH_TurtleHCFilter1, SLASH_TurtleHCFilter2 = "/HCF", "/HCFilter"
@@ -165,6 +177,9 @@ SlashCmdList["TurtleHCFilter"] = function(message)
 		elseif commandlist[1] == "debug" then
 			HCFDebug = not HCFDebug
 			Message("Debug mode " .. (HCFDebug and "enabled" or "disabled"))
+		elseif commandlist[1] == "trace" then
+			HCFTrace = not HCFTrace
+			Message("Trace logging " .. (HCFTrace and "enabled" or "disabled"))
 		elseif commandlist[1] == "levelfilter" then
 			HCFLevelFilter = not HCFLevelFilter
 			Message("Level filtering " .. (HCFLevelFilter and "enabled" or "disabled"))
@@ -183,4 +198,83 @@ SlashCmdList["TurtleHCFilter"] = function(message)
 	else
 		SetFrame(frame)
 	end
+end
+
+
+local alreadyshown = false
+local loginchannels = { "BATTLEGROUND", "RAID", "GUILD" }
+local groupchannels = { "BATTLEGROUND", "RAID" }
+  
+hcfupdater = CreateFrame("Frame")
+hcfupdater:RegisterEvent("CHAT_MSG_ADDON")
+hcfupdater:RegisterEvent("PLAYER_ENTERING_WORLD")
+hcfupdater:RegisterEvent("PARTY_MEMBERS_CHANGED")
+hcfupdater:SetScript("OnEvent", function()
+	if event == "CHAT_MSG_ADDON" and arg1 == "hcf" then
+		Trace("Received: " .. arg2)
+		local message = ParseMessage(arg2)
+		if(SemverCompare(message["version"], addonVersion) >= 0) then
+			Trace(message["sender"] .. " has version " .. addonVersion)
+			return
+		end
+		Trace("I have version " .. addonVersion .. " and " .. message["sender"] .. " has version " .. message["version"])
+		if not alreadyshown then
+			Message("New version available (" .. arg2 .. ")! " .. addonNotes)
+			alreadyshown = true
+		end
+	end
+
+	if event == "PARTY_MEMBERS_CHANGED" then
+		local groupsize = GetNumRaidMembers() > 0 and GetNumRaidMembers() or GetNumPartyMembers() > 0 and GetNumPartyMembers() or 0
+		if (this.currentGroupSize or 0) < groupsize then
+			for _, chan in pairs(groupchannels) do
+				SendVersionMessage(chan)
+			end
+		end
+		this.currentGroupSize = groupSize
+	end
+
+	if event == "PLAYER_ENTERING_WORLD" then
+		for _, chan in pairs(loginchannels) do
+			SendVersionMessage(chan)
+		end
+	end
+end)
+
+function SendVersionMessage(chan)
+	local msg = "sender=" .. me .. ",version=" .. addonVersion
+	Trace("Sent: " .. msg)
+	SendAddonMessage("hcf", msg, chan)
+end
+
+--pfUI.api.strsplit
+function strsplit(delimiter, subject)
+  if not subject then return nil end
+  local delimiter, fields = delimiter or ":", {}
+  local pattern = string.format("([^%s]+)", delimiter)
+  string.gsub(subject, pattern, function(c) fields[table.getn(fields)+1] = c end)
+  return unpack(fields)
+end
+
+function SemverCompare(ver1, ver2)
+	local major, minor, fix = strsplit(".", ver1)
+	local ver1Num = tonumber(major*10000 + minor*100 + fix)
+	major, minor, fix = strsplit(".", ver2)
+	local ver2Num = tonumber(major*10000 + minor*100 + fix)
+	return ver1Num - ver2Num
+end
+
+function ParseMessage(message)
+	local t={}
+	for kvp in gfind(message, "([^,]+)") do
+		local key = nil
+		for entry in gfind(kvp, "([^=]+)") do
+			if key == nil then
+				key = entry
+			else
+				t[key] = entry
+			end
+	  end
+	end
+	return t
 end
