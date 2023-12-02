@@ -1,3 +1,29 @@
+function Error(message)
+	DEFAULT_CHAT_FRAME:AddMessage("|cffbe5effHCF|cffff0000 "..message)
+end
+
+local turtle = (TargetHPText or TargetHPPercText)
+if turtle then
+		Error("This addon will only function correctly for Turtle WoW.")
+    return
+end
+
+function Message(message)
+	DEFAULT_CHAT_FRAME:AddMessage("|cffbe5effHCF|r "..message)
+end
+
+function Debug(message)
+	if HCFDebug then
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5effHCF|cffffff00 "..message)
+	end
+end
+
+function Trace(message)
+	if HCFTrace then
+		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5effHCF|cffffff00 "..message)
+	end
+end
+
 if HCFFrame == nil then HCFFrame = 1 end
 if HCFPrefix == nil then HCFPrefix = "HC" end
 if HCFColour == nil then HCFColour = "e6cd80" end
@@ -96,26 +122,6 @@ function ChatFrame_OnEvent(event)
 		return false
 	end
 	TurtleHCFilter_ChatFrame_OnEvent(event);
-end
-
-function Error(message)
-	DEFAULT_CHAT_FRAME:AddMessage("|cffbe5effHCF|cffff0000 "..message)
-end
-
-function Message(message)
-	DEFAULT_CHAT_FRAME:AddMessage("|cffbe5effHCF|r "..message)
-end
-
-function Debug(message)
-	if HCFDebug then
-		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5effHCF|cffffff00 "..message)
-	end
-end
-
-function Trace(message)
-	if HCFTrace then
-		DEFAULT_CHAT_FRAME:AddMessage("|cffbe5effHCF|cffffff00 "..message)
-	end
 end
 
 function SetFrame(frameString)
