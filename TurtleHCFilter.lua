@@ -3,7 +3,7 @@ function Error(message)
 end
 
 local turtle = (TargetHPText or TargetHPPercText)
-if turtle then
+if not turtle then
 		Error("This addon will only function correctly for Turtle WoW.")
     return
 end
