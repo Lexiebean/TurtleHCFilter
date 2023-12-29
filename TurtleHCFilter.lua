@@ -155,12 +155,12 @@ SlashCmdList["TurtleHCFilter"] = function(message)
 		for command in gfind(message, "[^ ]+") do
 			table.insert(commandlist, command)
 		end
-		if commandlist[1] == nil then 
+		if commandlist[1] == nil then
 			ShowHelp()
 			return
 		end
 		if commandlist[1] == "frame" then
-			if commandlist[2] == nil then 
+			if commandlist[2] == nil then
 				Error("No argument provided for command: "..message)
 				return
 			end
@@ -210,7 +210,7 @@ end
 local alreadyshown = false
 local loginchannels = { "BATTLEGROUND", "RAID", "GUILD" }
 local groupchannels = { "BATTLEGROUND", "RAID" }
-  
+
 hcfupdater = CreateFrame("Frame")
 hcfupdater:RegisterEvent("CHAT_MSG_ADDON")
 hcfupdater:RegisterEvent("PLAYER_ENTERING_WORLD")
